@@ -1,0 +1,6 @@
+[submodule "scripts/external/hMRI-toolbox"]
+	path = scripts/external/hMRI-toolbox
+	url = https://github.com/lukeje/hMRI-toolbox.git
+[submodule "scripts/external/MPMtools.jl"]
+	path = scripts/external/MPMtools.jl
+	url = https://github.com/lukeje/MPMtools.jl.git

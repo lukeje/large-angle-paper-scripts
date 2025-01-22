@@ -1,0 +1,7 @@
+sub,ses,MPM,method,comparand,voxels,nonfinite
+1,1,PD,sa,nosa,11173794,0
+1,1,R1,sa,nosa,11173794,0
+1,1,PD,sa,exact,11173794,0
+1,1,R1,sa,exact,11173794,4
+1,1,PD,nosa,exact,11173794,0
+1,1,R1,nosa,exact,11173794,5
