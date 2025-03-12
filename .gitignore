@@ -1,5 +1,6 @@
 # Ignore data directories
 invivo/raw/*
+invivo/dcm/*
 invivo/processed/*
 invivo/info
 postmortem/raw/*
