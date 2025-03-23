@@ -16,7 +16,7 @@ indir = joinpath(inroot, "hmri", "sub-phantom")
 outdir = joinpath(dirname(@__DIR__), "figures")
 
 # should be based on values in data
-b1lims = (70,120) # p.u.
+b1lims = (60,120) # p.u.
 difflims = Dict("R1" => (-5,   0.1), 
                 "PD" => ( -0.1, 1))
 
@@ -62,6 +62,11 @@ for b in b1maps
 
     # get distribution of all B1 values before masking by b1
     b1all = b1[b][histmask]
+
+    # info about B1 values
+    qB1 = 0.99
+    CSV.write(joinpath(outdir,"phantom_b1-$(b)_b1stats.csv"), 
+        DataFrame([skipnan(b1all)] .|> [median ((x) -> quantile(x,quantilearg(qB1))) maximum minimum], ["median", "q$(qB1*100)", "max", "min"]))
 
     # restrict analysis to B1 in b1lims
     histmask .&= (b1lims[1] .≤ b1[b] .≤ b1lims[2])
@@ -130,11 +135,6 @@ for b in b1maps
         l = @layout [a b; c d; e f]
         exim = plot(i1,i2,i3,i4,i5,plot!(p["sa","nosa"],title=["F: B1 dependence of differences" ""],titlelocation=:left), layout=l, dpi=300, size=(800,800), background_colour=:black)
         savefig(exim, joinpath(outdir,"phantom_b1-$(b)_opt-$(o)_Slices.png"))
-
-        # info about B1 values
-        qB1 = 0.99
-        CSV.write(joinpath(outdir,"phantom_b1-$(b)_opt-$(o)_b1stats.csv"), 
-            DataFrame([skipnan(b1all)] .|> [median ((x) -> quantile(x,quantilearg(qB1))) maximum minimum], ["median", "q$(qB1*100)", "max", "min"]))
 
         # info about non-finite values
         CSV.write(joinpath(outdir,"phantom_b1-$(b)_opt-$(o)_nonfinite.csv"), n_nonfinite)
