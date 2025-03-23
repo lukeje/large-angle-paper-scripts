@@ -127,7 +127,7 @@ for b in b1maps
 
             return h
         end
-        i1 = hm(ni["R1","nosa"], (0,3), "A: R1 map", L"s$^{-1}$")
+        i1 = hm(ni["R1","nosa"], (0,2), "A: R1 map", L"s$^{-1}$")
         i2 = hm(ni["PD","nosa"]./1000, (0,10000)./1000, "B: unnormalised PD map", L"$10^3$ a.u.")
         i3 = hm(abs.(diff["R1"]), reverse(.-(difflims["R1"])), "C: abs. relative R1 difference", "%")
         i4 = hm(diff["PD"], difflims["PD"], "D: relative PD difference", "%")
