@@ -17,11 +17,14 @@ outdir = joinpath(dirname(@__DIR__), "figures")
 
 # should be based on values in data
 b1lims = (70,120) # p.u.
-difflims = Dict("R1" => (-10,   0.1), 
-                "PD" => ( -0.1, 3))
+difflims = Dict("R1" => (-5,   0.1), 
+                "PD" => ( -0.1, 1))
 
 # chosen quartiles
 q = 0.95
+
+# which run of hMRI toolbox to use for testing. Choose "." to use first run or "Run_XX" to use a later run
+run = "."
 
 # convert affine matrix from NIfTI header to format for `warp`; last term converts between 1- and 0-based indexing
 convertToMap(a) = Translation(a[1:3,4]) ∘ LinearMap(a[1:3,1:3]) ∘ Translation([-1, -1, -1])
@@ -42,10 +45,10 @@ b1maps = ["afi","seste"]
 opts = ["R1opt","PDopt"]
 
 # B1 map
-b1_lowres = Dict(b => niread(glob("*B1map.nii", joinpath(indir,"fmap",b,"Results"))[]) for b in b1maps)
+b1_lowres = Dict(b => niread(glob("*B1map.nii", joinpath(indir,"fmap",b,run,"Results"))[]) for b in b1maps)
 
 # interpolate B1 map to target (ni) space
-target = niread(glob("*R1.nii", joinpath(indir,"anat","afi","PDopt","sa","Results"))[])
+target = niread(glob("*R1.nii", joinpath(indir,"anat","afi","PDopt","sa",run,"Results"))[])
 transNI = convertToMap(NIfTI.getaffine(target))
 b1 = Dict(b => warp(b1_lowres[b], inv(convertToMap(NIfTI.getaffine(b1_lowres[b]))) ∘ transNI, axes(target), method=BSpline(Cubic())) for b in b1maps)
 
@@ -68,7 +71,7 @@ for b in b1maps
     b1vals = range(b1lims..., length=20)
 
     for o in opts
-        ni = Dict((m,a) => niread(glob("*$(v).nii", joinpath(indir,"anat",b,o,a,"Results"))[]) for (m,v) in mpms, a in conds)
+        ni = Dict((m,a) => niread(glob("*$(v).nii", joinpath(indir,"anat",b,o,a,run,"Results"))[]) for (m,v) in mpms, a in conds)
 
         # plot differences
         global diff = Dict(m => reldiff.(ni[m,"sa"], ni[m,"nosa"]) for (m,_) = keys(ni))
