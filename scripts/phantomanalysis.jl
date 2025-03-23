@@ -83,11 +83,11 @@ for b in b1maps
         global p = Dict()
         global counts = Dict()
         global qrs = Dict()
-        global n_nonfinite = DataFrame(sub=Int[], ses=Int[], MPM=String[], method=String[], comparand=String[], voxels=Int[], nonfinite=Int[])
+        global n_nonfinite = DataFrame(sub=String[], MPM=String[], method=String[], comparand=String[], voxels=Int[], nonfinite=Int[])
         for comppair in (("sa","nosa"),)
             local diff = Dict(m => reldiff.(ni[m,first(comppair)], ni[m,last(comppair)]) for (m,_) = keys(ni))
 
-            append!(n_nonfinite, DataFrame(((sub=1, ses=1, MPM=m, method=first(comppair), comparand=last(comppair), 
+            append!(n_nonfinite, DataFrame(((sub="phantom", MPM=m, method=first(comppair), comparand=last(comppair), 
                 voxels=count(histmask), nonfinite=count(.!isfinite.(diff[m][histmask]))) for m in keys(diff))) )
 
             h1 = histogram2d(b1local, diff["R1"][histmask], bins=(range(b1lims...,length=100),range(difflims["R1"]...,length=100)), colorbar=:none, background_colour=:black)
