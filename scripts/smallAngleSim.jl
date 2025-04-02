@@ -23,42 +23,20 @@ faT1w  = (27, 84)
 
 Adifflim  = ((-0.01,2.5), ( -0.1, 50))
 R1difflim = ((-8,   0.1), (-60,    0.1))
-
-"""
-    ernst1(α, TR, R₁[, PD=PD])
-
-Steady state signal from the Ernst equation for given flip angle α, TR, and R₁.
-Optionally scale the signal by PD.
-    
-α should be in radians, and time units of TR and R₁ should match.
-
-    ernstd1(α, TR, R₁[, PD=PD])
-
-As for `ernst1`, but with α in degrees
-"""
-function ernst1(α::Number, TR::Number, R₁::Number; PD::Number=one(TR))
-    τ = 2tan(0.5α)
-    ρ = 2tanh(0.5R₁*TR)
-    signal = PD * τ * ρ / ((τ^2)/2 + ρ)
-    return WeightedContrast(signal, α, TR)
-end
-
-ernstd1(α, TR, R₁; PD=one(TR)) = ernst1(deg2rad(α), TR, R₁, PD=PD)
-
 for N in [1 2]
     # use novel method
     MRItypes.half_angle_tan(α) = 2tan(0.5α)
-    PDw = ernstd1.(B1[N].*faPDw[N], TR[N], R1[N], PD=A)
-    T1w = ernstd1.(B1[N].*faT1w[N], TR[N], R1[N], PD=A)
-    
+    PDw = MRIutils.ernstd.(B1[N].*faPDw[N], TR[N], R1[N], PD=A)
+    T1w = MRIutils.ernstd.(B1[N].*faT1w[N], TR[N], R1[N], PD=A)
+
     A_est  = MRImaps.calculateA.(PDw, T1w)
     R1_est = MRImaps.calculateR1.(PDw, T1w)
-    
+
     # use small angle approximation
     MRItypes.half_angle_tan(α) = α
-    PDwFA = ernstd1.(B1[N].*faPDw[N], TR[N], R1[N], PD=A)
-    T1wFA = ernstd1.(B1[N].*faT1w[N], TR[N], R1[N], PD=A)
-    
+    PDwFA = MRIutils.ernstd.(B1[N].*faPDw[N], TR[N], R1[N], PD=A)
+    T1wFA = MRIutils.ernstd.(B1[N].*faT1w[N], TR[N], R1[N], PD=A)
+
     A_FA_est  = MRImaps.calculateA.(PDwFA, T1wFA)
     R1_FA_est = MRImaps.calculateR1.(PDwFA, T1wFA)
 
@@ -81,7 +59,7 @@ for N in [1 2]
     xticks!(50:25:150)
 
     xlabel!("B1 (p.u.)")
-    ylabel!("relative PD error (%)")
+    ylabel!(L"relative $A$ error (%)")
 
     if N==1
         global p = plot(p1, p2, layout = (2,1), title=[names[N] " "])
