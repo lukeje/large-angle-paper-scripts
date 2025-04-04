@@ -23,8 +23,8 @@ faT1w  = (27, 84)
 
 SNR = Inf
 
-Adifflim  = ((-0.01,2.5), ( -0.1, 50))
-R1difflim = ((-8,   0.1), (-60,    1))
+Adifflim  = ((-0.5,2.5), ( -10, 50))
+R1difflim = ((-8,  2),   (-60, 15))
 for N in [1 2]
     # use novel method
     MRItypes.half_angle_tan(α) = 2tan(0.5α)
@@ -54,7 +54,7 @@ for N in [1 2]
     local p1 = plot(100*B1[N], 100*(R1_est .- R1[N])./R1[N], label="", seriescolor=:blue, linewidth=2, ylims=R1difflim[N])
     plot!(100*B1[N], 100*(R1_est .- R1[N] .- dR1)./R1[N], fillrange=100*(R1_est .- R1[N] .+ dR1)./R1[N], 
                 seriescolor=:blue, label=false, linewidth=0, seriestype=:steppre, alpha=0.25)
-    annotate!(100*(B1[N][end]), 100*(R1_est[end] - R1[N])/R1[N] + 0.01*-(ylims()...), ("new method", :top, :right, :black))
+    annotate!(100*(B1[N][end]), 100*(R1_est[end] - R1[N])/R1[N] - 0.01*-(ylims()...), ("new method", :bottom, :right, :black))
     xticks!(50:25:150)
 
     plot!(100*B1[N], 100*(R1_FA_est .- R1[N])./R1[N], label="", seriescolor=:red, linewidth=2, ylims=R1difflim[N])
@@ -63,12 +63,15 @@ for N in [1 2]
     annotate!(100*(B1[N][end]), 100*(R1_FA_est[end] - R1[N])/R1[N] + 0.02*-(ylims()...), ("small angle method", :top, :right, :black))
     xticks!(50:25:150)
 
+    # fudge factor for increase in axis needed to show errors
+    ylims!((ylims() .+ 400 .* [-1,1]/SNR)...)
+
     ylabel!("relative R1 error (%)")
 
     local p2 = plot(100*B1[N], 100*(A_est .- A)./A, label="", seriescolor=:blue, linewidth=2, ylims=Adifflim[N])
     plot!(100*B1[N], 100*(A_est .- A .- dA)./A, fillrange=100*(A_est .- A .+ dA)./A, 
                 seriescolor=:blue, label=false, linewidth=0, seriestype=:steppre, alpha=0.25)
-    annotate!(100*(B1[N][end]), 100*(A_est[end] - A)/A - 0.02*-(ylims()...), ("new method", :bottom, :right, :black))
+    annotate!(100*(B1[N][end]), 100*(A_est[end] - A)/A + 0.02*-(ylims()...), ("new method", :top, :right, :black))
     xticks!(50:25:150)
 
     plot!(100*B1[N], 100*(A_FA_est .- A)./A, label="", seriescolor=:red, linewidth=2, ylims=Adifflim[N])
@@ -76,6 +79,9 @@ for N in [1 2]
                 seriescolor=:red, label=false, linewidth=0, seriestype=:steppre, alpha=0.25)
     annotate!(100*(B1[N][end]), 100*(A_FA_est[end] - A)/A - 0.01*-(ylims()...), ("small angle method", :bottom, :right, :black))
     xticks!(50:25:150)
+
+    # fudge factor for increase in axis needed to show errors
+    ylims!((ylims() .+ 200 .* [-1,1]/SNR)...)
 
     xlabel!("B1 (p.u.)")
     ylabel!(L"relative $A$ error (%)")
