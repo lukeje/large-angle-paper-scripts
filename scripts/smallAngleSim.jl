@@ -82,7 +82,7 @@ for SNR in (18, 51, Inf) # in vivo, postmortem, no noise
         # fudge factor for increase in axis needed to show errors
         ylims!((ylims() .+ 200 .* [-1,1]/SNR)...)
 
-        xlabel!("B1 (p.u.)")
+        xlabel!(L"$f_\mathrm{t}$ (%)")
         ylabel!(L"relative $A$ error (%)")
 
         if N==1

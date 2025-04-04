@@ -20,7 +20,7 @@ r1lims = (-0.001,    2) # s^-1
 pdlims = (-0.001,15000) # a.u.
 pdscale = (val=1e3,pp="10³")
 difflims = Dict("R1" => (-8,   0.1), # %
-                "PD" => (-0.01,2.5) # p.u.
+                "A"  => (-0.01,2.5) # p.u.
                )
 slicedim = 1
 
@@ -66,10 +66,10 @@ for sub in 1:nsub, ses in 1:nses
 
     # MPM data
     mpms  = Dict("R1" => (name="R1", folder="Results"),
-                 "PD" => (name="A",  folder="Results"))
+                 "A"  => (name=L"$A$",  folder="Results"))
     conds = ["sa","nosa","exact"]
     ni = Dict(m => 
-                Dict(a => niread(glob("*$(v.name).nii", joinpath(indir,a,v.folder))[]) for a in conds) 
+                Dict(a => niread(glob("*$(m).nii", joinpath(indir,a,v.folder))[]) for a in conds) 
               for (m,v) in mpms)
 
     # B1 map
@@ -117,10 +117,10 @@ for sub in 1:nsub, ses in 1:nses
         h1 = histogram2d(b1local, diff["R1"][histmask], bins=(range(b1lims...,length=100),range(difflims["R1"]...,length=100)), colorbar=:none, background_colour=:black)
         xlims!(h1, b1lims)
         ylabel!(h1, join(["relative R1", "difference (%)"],'\n'))
-        h2 = histogram2d(b1local, diff["PD"][histmask],  bins=(range(b1lims...,length=100),range(difflims["PD"]...,length=100)), colorbar=:none, background_colour=:black)
+        h2 = histogram2d(b1local, diff["A"][histmask],  bins=(range(b1lims...,length=100),range(difflims["A"]...,length=100)), colorbar=:none, background_colour=:black)
         xlims!(h2, xlims(h1))
-        xlabel!(h2, "B1 / p.u.")
-        ylabel!(h2, join(["relative PD", "difference (%)"],'\n'))
+        xlabel!(h2, L"$f_\mathrm{t}$ (%)")
+        ylabel!(h2, join([L"relative $A$", "difference (%)"],'\n'))
         local l = @layout [a; b]
         global p[sub,ses][comppair] = plot(h1, h2, layout=l, left_margin=10Plots.pt, background_colour=:black)
 
@@ -141,10 +141,10 @@ for sub in 1:nsub, ses in 1:nses
     # plot medians
     p_med = Dict()
     labelpos = Dict(("R1","nosa") => (:top,    :right),
-                    ("PD","nosa") => (:bottom, :right),
+                    ("A","nosa") => (:bottom, :right),
                     ("R1","sa")   => (:top, :right),
-                    ("PD","sa")   => (:bottom, :right))
-    for m in keys(ni)
+                    ("A","sa")   => (:bottom, :right))
+    for (m,v) in mpms
         p_med[m] = plot()
         for (b,st,idx) in ((b1vals[1:end-1],:steppost,1:length(b1vals)-1), (last(b1vals,2),:steppre, length(b1vals) .- [2,1]))
             plot!(p_med[m], b, qrs["nosa","exact"][m][idx,1], fillrange=qrs["nosa","exact"][m][idx,2], 
@@ -152,26 +152,26 @@ for sub in 1:nsub, ses in 1:nses
             plot!(p_med[m], b, qrs["sa","exact"][m][idx,1], fillrange=qrs["sa","exact"][m][idx,2],
                 seriescolor=:red, label=false, linewidth=0, seriestype=st, alpha=0.25)
             plot!(p_med[m], b, hcat((counts[s,"exact"][m][idx] for s in ("nosa","sa"))...), 
-                                ylims=difflims[m], ylabel="relative $m error (%)", xticks=(50:25:150), 
+                                ylims=difflims[m], ylabel="relative $(v.name) error (%)", xticks=(50:25:150), 
                                 seriescolor=[:blue :red], label=false, linewidth=2, seriestype=st)
         end
         annotate!(b1vals[end], last(skipnan(counts["nosa","exact"][m])), ("new method",  labelpos[m,"nosa"]..., :black))
         annotate!(b1vals[end], last(skipnan(counts["sa","exact"][m])),   ("small angle method", labelpos[m,"sa"]...,   :black))
     end
-    xlabel!(p_med["PD"],"B1 (p.u.)")
+    xlabel!(p_med["A"],L"$f_\mathrm{t}$ (%)")
 
-    f_med = plot(p_med["R1"],p_med["PD"], layout=(2,1), dpi=300, size=(600,600), plot_title="A: in vivo experiment")
+    f_med = plot(p_med["R1"],p_med["A"], layout=(2,1), dpi=300, size=(600,600), plot_title="A: in vivo experiment")
     savefig(f_med, joinpath(outdir,"invivobias_median_sub-$(sub)_ses-$(ses).png"))
 
     # example images
     vismask = erode(dilate(selectdim(brain[:,:,:],slicedim,slice), r=25), r=15) # fill holes in brain mask
     i1 = hm(ni["R1"]["nosa"], vismask, slice, r1lims, "A: R1 map", L"s$^{-1}$")
-    i2 = hm(ni["PD"]["nosa"]./pdscale.val, vismask, slice, pdlims./pdscale.val, "B: unnormalised PD map", "$(pdscale.pp) a.u.")
+    i2 = hm(ni["A"]["nosa"]./pdscale.val, vismask, slice, pdlims./pdscale.val, L"B: $A$ map", "$(pdscale.pp) a.u.")
     i3 = hm(abs.(diff["R1"]), vismask, slice, reverse(.-(difflims["R1"])), "C: abs. relative R1 difference", "%")
-    i4 = hm(diff["PD"], vismask, slice, difflims["PD"], "D: relative PD difference", "%")
-    i5 = hm(b1, vismask, slice, b1lims, "E: B1 map", "p.u.")
+    i4 = hm(diff["A"], vismask, slice, difflims["A"], L"D: relative $A$ difference", "%")
+    i5 = hm(b1, vismask, slice, b1lims, L"E: $f_\mathrm{t}$ map", "%")
     l = @layout [a b; c d; e f]
-    exim = plot(i1,i2,i3,i4,i5,plot!(p[sub,ses]["sa","nosa"],title=["F: B1 dependence of differences" ""],titlelocation=:left), layout=l, dpi=300, size=(800,1200), background_colour=:black)
+    exim = plot(i1,i2,i3,i4,i5,plot!(p[sub,ses]["sa","nosa"],title=[L"F: $f_\mathrm{t}$ dependence of differences" ""],titlelocation=:left), layout=l, dpi=300, size=(800,1200), background_colour=:black)
     savefig(exim, joinpath(outdir,"invivobias_sub-$(sub)_ses-$(ses).png"))
 end
 

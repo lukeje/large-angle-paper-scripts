@@ -23,9 +23,9 @@ reldiff(a,b) = b!=0 ? 100 * (a - b)/b : (a==0 ? zero(a) : NaN)
 
 # MPM data
 mpms  = Dict("R1" => (name="R1", folder="Results"),
-             "PD" => (name="A",  folder="Results"))
+             "A" => (name=L"$A$",  folder="Results"))
 conds = ["sa","nosa","exact"]
-ni = Dict((m,a) => niread(glob("*$(v.name).nii", joinpath(indir,a,v.folder))[]) for (m,v) in mpms, a in conds)
+ni = Dict((m,a) => niread(glob("*$m.nii", joinpath(indir,a,v.folder))[]) for (m,v) in mpms, a in conds)
 
 # B1 map
 b1_lowres = niread(glob("*B1map.nii", joinpath(indir,"sa","Results","Supplementary"))[1])
@@ -60,7 +60,7 @@ quantilearg(q) = [0+0.5(1 - q), 1-0.5(1 - q)]
 
 # plot differences
 difflims = Dict("R1" => (-60,    0.1), 
-                "PD"  => ( -0.1, 50))
+                "A"  => ( -0.1, 50))
 global diff = Dict(m => reldiff.(ni[m,"sa"], ni[m,"nosa"]) for (m,_) = keys(ni))
 global p = Dict()
 global counts = Dict()
@@ -75,10 +75,10 @@ for comppair in (("sa","nosa"),("sa","exact"),("nosa","exact"))
     h1 = histogram2d(b1local, diff["R1"][histmask], bins=(range(b1lims...,length=100),range(difflims["R1"]...,length=100)), colorbar=:none, background_colour=:black)
     xlims!(h1, b1lims)
     ylabel!(h1, join(["relative R1", "difference (%)"],'\n'))
-    h2 = histogram2d(b1local, diff["PD"][histmask], bins=(range(b1lims...,length=100),range(difflims["PD"]..., length=100)), colorbar=:none, background_colour=:black)
+    h2 = histogram2d(b1local, diff["A"][histmask], bins=(range(b1lims...,length=100),range(difflims["A"]..., length=100)), colorbar=:none, background_colour=:black)
     xlims!(h2, xlims(h1))
-    xlabel!(h2, "B1 / p.u.")
-    ylabel!(h2, join(["relative PD", "difference (%)"],'\n'))
+    xlabel!(h2, L"$f_\mathrm{t}$ (%)")
+    ylabel!(h2, join([L"relative $A$", "difference (%)"],'\n'))
     local l = @layout [a; b]
     p[comppair] = plot(h1, h2, layout=l)
 
@@ -99,10 +99,10 @@ end
 # plot medians
 p_med = Dict()
 labelpos = Dict(("R1","nosa") => (:top,    :right),
-                ("PD","nosa") => (:bottom, :right),
+                ("A","nosa") => (:bottom, :right),
                 ("R1","sa")   => (:top,    :right),
-                ("PD","sa")   => (:bottom, :right))
-for (m,_) in keys(ni)
+                ("A","sa")   => (:bottom, :right))
+for (m,v) in mpms
     p_med[m] = plot()
     for (b,st,idx) in ((b1vals[1:end-1],:steppost,1:length(b1vals)-1), (last(b1vals,2),:steppre, length(b1vals) .- [2,1]))
         plot!(p_med[m], b, qrs["nosa","exact"][m][idx,1], fillrange=qrs["nosa","exact"][m][idx,2], 
@@ -110,15 +110,15 @@ for (m,_) in keys(ni)
         plot!(p_med[m], b, qrs["sa","exact"][m][idx,1], fillrange=qrs["sa","exact"][m][idx,2],
             seriescolor=:red, label=false, linewidth=0, seriestype=st, alpha=0.25)
         plot!(p_med[m], b, hcat((counts[s,"exact"][m][idx] for s in ("nosa","sa"))...), 
-                            ylims=difflims[m], ylabel="relative $m error (%)", xticks=(50:25:150), 
+                            ylims=difflims[m], ylabel="relative $(v.name) error (%)", xticks=(50:25:150), 
                             seriescolor=[:blue :red], label=false, linewidth=2, seriestype=st)
     end
     annotate!(b1vals[end], last(skipnan(counts["nosa","exact"][m])), ("new method",  labelpos[m,"nosa"]..., :black))
     annotate!(b1vals[end], last(skipnan(counts["sa","exact"][m])),   ("small angle method", labelpos[m,"sa"]...,   :black))
 end
-xlabel!(p_med["PD"],"B1 (p.u.)")
+xlabel!(p_med["A"],L"$f_\mathrm{t}$ (%)")
 
-f_med = plot(p_med["R1"],p_med["PD"], layout=(2,1), dpi=300, size=(600,600), plot_title="B: postmortem experiment")
+f_med = plot(p_med["R1"],p_med["A"], layout=(2,1), dpi=300, size=(600,600), plot_title="B: postmortem experiment")
 savefig(f_med, joinpath(outdir,"postmortem_median.png"))
 
 # example images
@@ -141,12 +141,12 @@ function hm(i,c,t,ct) # volume, clim, title, colorbar_title
     return h
 end
 i1 = hm(ni["R1","nosa"], (0,3), "A: R1 map", L"s$^{-1}$")
-i2 = hm(ni["PD","nosa"]./1000, (0,10000)./1000, "B: unnormalised PD map", L"$10^3$ a.u.")
+i2 = hm(ni["A","nosa"]./1000, (0,10000)./1000, L"B: $A$ map", L"$10^3$ a.u.")
 i3 = hm(abs.(diff["R1"]), reverse(.-(difflims["R1"])), "C: abs. relative R1 difference", "%")
-i4 = hm(diff["PD"], difflims["PD"], "D: relative PD difference", "%")
-i5 = hm(b1, b1lims, "E: B1 map", "p.u.")
+i4 = hm(diff["A"], difflims["A"], L"D: relative $A$ difference", "%")
+i5 = hm(b1, b1lims, L"E: $f_\mathrm{t}$ map", "%")
 l = @layout [a b; c d; e f]
-exim = plot(i1,i2,i3,i4,i5,plot!(p["sa","nosa"],title=["F: B1 dependence of differences" ""],titlelocation=:left), layout=l, dpi=300, size=(800,800), background_colour=:black)
+exim = plot(i1,i2,i3,i4,i5,plot!(p["sa","nosa"],title=[L"F: $f_\mathrm{t}$ dependence of differences" ""],titlelocation=:left), layout=l, dpi=300, size=(800,800), background_colour=:black)
 savefig(exim, joinpath(outdir,"postmortemSlices.png"))
 
 # info about B1 values

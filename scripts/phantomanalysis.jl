@@ -18,7 +18,7 @@ outdir = joinpath(dirname(@__DIR__), "figures")
 # should be based on values in data
 b1lims = (60,120) # p.u.
 difflims = Dict("R1" => (-5,   0.1), 
-                "PD" => ( -0.1, 1))
+                "A" => ( -0.1, 1))
 
 # chosen quartiles
 q = 0.95
@@ -38,8 +38,8 @@ quantilearg(q) = [0+0.5(1 - q), 1-0.5(1 - q)]
 
 
 # MPM data labels
-mpms  = Dict("R1" => "R1",
-             "PD" => "A")
+mpms  = Dict("R1" =>  "R1",
+             "A"  => L"$A$")
 conds = ["sa","nosa"]
 b1maps = ["afi","seste"]
 opts = ["R1opt","PDopt"]
@@ -76,7 +76,7 @@ for b in b1maps
     b1vals = range(b1lims..., length=20)
 
     for o in opts
-        ni = Dict((m,a) => niread(glob("*$(v).nii", joinpath(indir,"anat",b,o,a,run,"Results"))[]) for (m,v) in mpms, a in conds)
+        ni = Dict((m,a) => niread(glob("*$(m).nii", joinpath(indir,"anat",b,o,a,run,"Results"))[]) for m in keys(mpms), a in conds)
 
         # plot differences
         global diff = Dict(m => reldiff.(ni[m,"sa"], ni[m,"nosa"]) for (m,_) = keys(ni))
@@ -93,10 +93,10 @@ for b in b1maps
             h1 = histogram2d(b1local, diff["R1"][histmask], bins=(range(b1lims...,length=100),range(difflims["R1"]...,length=100)), colorbar=:none, background_colour=:black)
             xlims!(h1, b1lims)
             ylabel!(h1, join(["relative R1", "difference (%)"],'\n'))
-            h2 = histogram2d(b1local, diff["PD"][histmask], bins=(range(b1lims...,length=100),range(difflims["PD"]..., length=100)), colorbar=:none, background_colour=:black)
+            h2 = histogram2d(b1local, diff["A"][histmask], bins=(range(b1lims...,length=100),range(difflims["A"]..., length=100)), colorbar=:none, background_colour=:black)
             xlims!(h2, xlims(h1))
-            xlabel!(h2, "B1 / p.u.")
-            ylabel!(h2, join(["relative PD", "difference (%)"],'\n'))
+            xlabel!(h2, L"$f_\mathrm{t}$ (%)")
+            ylabel!(h2, join([L"relative $A$", "difference (%)"],'\n'))
             local l = @layout [a; b]
             p[comppair] = plot(h1, h2, layout=l)
 
@@ -128,12 +128,12 @@ for b in b1maps
             return h
         end
         i1 = hm(ni["R1","nosa"], (0,2), "A: R1 map", L"s$^{-1}$")
-        i2 = hm(ni["PD","nosa"]./1000, (0,10000)./1000, "B: unnormalised PD map", L"$10^3$ a.u.")
+        i2 = hm(ni["A","nosa"]./1000, (0,10000)./1000, L"B: $A$ map", L"$10^3$ a.u.")
         i3 = hm(abs.(diff["R1"]), reverse(.-(difflims["R1"])), "C: abs. relative R1 difference", "%")
-        i4 = hm(diff["PD"], difflims["PD"], "D: relative PD difference", "%")
-        i5 = hm(b1[b], b1lims, "E: B1 map", "p.u.")
+        i4 = hm(diff["A"], difflims["A"], L"D: relative $A$ difference", "%")
+        i5 = hm(b1[b], b1lims, L"E: $f_\mathrm{t}$ map", "%")
         l = @layout [a b; c d; e f]
-        exim = plot(i1,i2,i3,i4,i5,plot!(p["sa","nosa"],title=["F: B1 dependence of differences" ""],titlelocation=:left), layout=l, dpi=300, size=(800,800), background_colour=:black)
+        exim = plot(i1,i2,i3,i4,i5,plot!(p["sa","nosa"],title=[L"F: $f_\mathrm{t}$ dependence of differences" ""],titlelocation=:left), layout=l, dpi=300, size=(800,800), background_colour=:black)
         savefig(exim, joinpath(outdir,"phantom_b1-$(b)_opt-$(o)_Slices.png"))
 
         # info about non-finite values
