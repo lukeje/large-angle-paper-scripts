@@ -9,7 +9,7 @@ using Plots, LaTeXStrings
 using Statistics
 using DataFrames, CSV
 
-# input directories
+# input and output directories
 mpmroot = joinpath(dirname(@__DIR__), "postmortem", "processed")
 brainmaskfile = joinpath(dirname(mpmroot), "raw", "brainmask.nii")
 indir = joinpath(mpmroot, "sub-1", "ses-1")

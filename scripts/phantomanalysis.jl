@@ -9,7 +9,7 @@ using Plots, LaTeXStrings
 using Statistics
 using DataFrames, CSV
 
-# input directories
+# input and output directories
 inroot = joinpath(dirname(@__DIR__), "phantom", "derived")
 maskfile = joinpath(inroot, "spm", "sub-phantom", "mask.nii")
 indir = joinpath(inroot, "hmri", "sub-phantom")

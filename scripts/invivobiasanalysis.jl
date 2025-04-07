@@ -9,7 +9,7 @@ using Plots, LaTeXStrings
 using Statistics
 using DataFrames, CSV
 
-# input directories
+# input and output directories
 mpmroot = joinpath(dirname(@__DIR__), "invivo", "processed")
 outdir  = joinpath(dirname(@__DIR__), "figures")
 
