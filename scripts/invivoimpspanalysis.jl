@@ -157,7 +157,7 @@ for sub in 1:nsub, ses in 1:nses
     annotate!(b1vals[end], last(skipnan(counts["sa","exact"])),   ("small angle method", labelpos["R1","sa"]...,   :black))
     xlabel!(p_med,L"$f_\mathrm{t}$ (%)")
 
-    f_med = plot(p_med, dpi=300, size=(600,600), plot_title="A: in vivo experiment")
+    f_med = plot(p_med, dpi=300, size=(600,310), plot_title="A: in vivo experiment")
     savefig(f_med, joinpath(outdir,"invivoimpsp_median_sub-$(sub)_ses-$(ses).png"))
 
     # example images
@@ -166,7 +166,7 @@ for sub in 1:nsub, ses in 1:nses
     i3 = hm(abs.(diff), vismask, slice, reverse(.-(difflims["R1"])), "B: abs. relative R1 difference", "%", ni["R1"]["sa"])
     i5 = hm(b1, vismask, slice, b1lims, L"C: $f_\mathrm{t}$ map", "%", ni["R1"]["sa"])
     l = @layout [a b; c d]
-    exim = plot(i1,i3,i5,plot!(p[sub,ses]["sa","nosa"],title=[L"D: $f_\mathrm{t}$ dependence of differences" ""],titlelocation=:left), layout=l, dpi=300, size=(800,1200), background_colour=:black)
+    exim = plot(i1,i3,i5,plot!(p[sub,ses]["sa","nosa"],title=[L"D: $f_\mathrm{t}$ dependence of differences" ""],titlelocation=:left), layout=l, dpi=300, size=(800,800), background_colour=:black)
     savefig(exim, joinpath(outdir,"invivoimpsp_sub-$(sub)_ses-$(ses).png"))
 end
 
