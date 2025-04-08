@@ -126,6 +126,7 @@ for sub in 1:nsub, ses in 1:nses
 
         h1 = histogram2d(b1local, diff[histmask], bins=(range(b1lims...,length=100),range(difflims["R1"]...,length=100)), colorbar=:none, background_colour=:black)
         xlims!(h1, b1lims)
+        xlabel!(h1,L"$f_\mathrm{t}$ (%)")
         ylabel!(h1, join(["relative R1", "difference (%)"],'\n'))
         global p[sub,ses][comppair] = plot(h1, left_margin=10Plots.pt, background_colour=:black)
 
@@ -163,10 +164,10 @@ for sub in 1:nsub, ses in 1:nses
     # example images
     vismask = erode(dilate(selectdim(brain[:,:,:],slicedim,slice), r=25), r=15) # fill holes in brain mask
     i1 = hm(R1["nosa"], vismask, slice, r1lims, "A: R1 map", L"s$^{-1}$", ni["R1"]["sa"])
-    i3 = hm(abs.(diff), vismask, slice, reverse(.-(difflims["R1"])), "B: abs. relative R1 difference", "%", ni["R1"]["sa"])
-    i5 = hm(b1, vismask, slice, b1lims, L"C: $f_\mathrm{t}$ map", "%", ni["R1"]["sa"])
+    i3 = hm(abs.(diff), vismask, slice, reverse(.-(difflims["R1"])), "C: abs. relative R1 difference", "%", ni["R1"]["sa"])
+    i5 = hm(b1, vismask, slice, b1lims, L"D: $f_\mathrm{t}$ map", "%", ni["R1"]["sa"])
     l = @layout [a b; c d]
-    exim = plot(i1,i3,i5,plot!(p[sub,ses]["sa","nosa"],title=[L"D: $f_\mathrm{t}$ dependence of differences" ""],titlelocation=:left), layout=l, dpi=300, size=(800,800), background_colour=:black)
+    exim = plot(i1, plot!(p[sub,ses]["sa","nosa"],title=[L"B: $f_\mathrm{t}$ dependence of differences" ""],titlelocation=:left), i3, i5, layout=l, dpi=300, size=(800,800), background_colour=:black)
     savefig(exim, joinpath(outdir,"invivoimpsp_sub-$(sub)_ses-$(ses).png"))
 end
 
