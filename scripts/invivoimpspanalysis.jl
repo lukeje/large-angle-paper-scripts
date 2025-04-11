@@ -15,7 +15,7 @@ mpmroot = joinpath(dirname(@__DIR__), "invivo", "processed")
 outdir  = joinpath(dirname(@__DIR__), "figures")
 
 # file containing imperfect spoiling correction coefficients
-imp_sp_file = joinpath(@__DIR__, "Large_Angle_Paper.json")
+imp_sp_file = joinpath(@__DIR__, "InVivo.json")
 
 # visualisation options
 # lower (upper) bounds slightly different from zero so that zero ytick appears on plot

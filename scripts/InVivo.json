@@ -1,7 +1,7 @@
 {
 	"Input": {
 		"outdir": ["."],
-		"prot_name": "Large_Angle_Paper",
+		"prot_name": "InVivo",
 		"seq_params": {
 			"FA_deg": [5,27],
 			"TR_ms": [31.6,31.6],
@@ -27,13 +27,13 @@
 		}
 	},
 	"ToCopy": [
-		"hmri_def.MPMacq_set.names{NN} = 'Large_Angle_Paper';",
-		"hmri_def.MPMacq_set.tags{NN}  = 'Large_Angle_Paper';",
+		"hmri_def.MPMacq_set.names{NN} = 'InVivo';",
+		"hmri_def.MPMacq_set.tags{NN}  = 'InVivo';",
 		"hmri_def.MPMacq_set.vals{NN}  = [31.6         31.6            5           27];",
-		"hmri_def.imperfectSpoilCorr.Large_Angle_Paper.tag = 'Large_Angle_Paper';",
-		"hmri_def.imperfectSpoilCorr.Large_Angle_Paper.P2_a = [6.0371     -7.2493      3.2557];",
-		"hmri_def.imperfectSpoilCorr.Large_Angle_Paper.P2_b = [-0.013      0.0106      0.9968];",
-		"hmri_def.imperfectSpoilCorr.Large_Angle_Paper.small_angle_approx = false;",
-		"hmri_def.imperfectSpoilCorr.Large_Angle_Paper.enabled = hmri_def.imperfectSpoilCorr.enabled;"
+		"hmri_def.imperfectSpoilCorr.InVivo.tag = 'InVivo';",
+		"hmri_def.imperfectSpoilCorr.InVivo.P2_a = [6.0371     -7.2493      3.2557];",
+		"hmri_def.imperfectSpoilCorr.InVivo.P2_b = [-0.013      0.0106      0.9968];",
+		"hmri_def.imperfectSpoilCorr.InVivo.small_angle_approx = false;",
+		"hmri_def.imperfectSpoilCorr.InVivo.enabled = hmri_def.imperfectSpoilCorr.enabled;"
 	]
 }

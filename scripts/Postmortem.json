@@ -1,0 +1,39 @@
+{
+	"Input": {
+		"outdir": ["."],
+		"prot_name": "Postmortem",
+		"seq_params": {
+			"FA_deg": [18,84],
+			"TR_ms": [70,70],
+			"Phi0_deg": 137,
+			"B1range_percent": [50,55,60,65,70,75,80,85,90,95,100,105,110,115,120,125,130],
+			"Gdur_ms": 6.21338931090787,
+			"Gamp_mT_per_m": 37.8
+		},
+		"tissue_params": {
+			"T1range_ms": [500,600,700,800,900,1000,1100,1200,1300,1400,1500,1600,1700,1800,1900,2000],
+			"T2range_ms": 30,
+			"D_um2_per_ms": 0.2
+		},
+		"small_angle_approx": false
+	},
+	"Output": {
+		"P2_a": [15.761,-20.3387,5.8629],
+		"P2_b": [-0.0326,0.0393,0.9878],
+		"small_angle_approx": false,
+		"RMSE_percent": {
+			"T1app": 0.52,
+			"T1corr": 0.059
+		}
+	},
+	"ToCopy": [
+		"hmri_def.MPMacq_set.names{NN} = 'Postmortem';",
+		"hmri_def.MPMacq_set.tags{NN}  = 'Postmortem';",
+		"hmri_def.MPMacq_set.vals{NN}  = [70  70  18  84];",
+		"hmri_def.imperfectSpoilCorr.Postmortem.tag = 'Postmortem';",
+		"hmri_def.imperfectSpoilCorr.Postmortem.P2_a = [15.761     -20.3387       5.8629];",
+		"hmri_def.imperfectSpoilCorr.Postmortem.P2_b = [-0.0326      0.0393      0.9878];",
+		"hmri_def.imperfectSpoilCorr.Postmortem.small_angle_approx = false;",
+		"hmri_def.imperfectSpoilCorr.Postmortem.enabled = hmri_def.imperfectSpoilCorr.enabled;"
+	]
+}
