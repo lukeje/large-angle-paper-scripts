@@ -141,7 +141,6 @@ for sub in 1:nsub, ses in 1:nses
     end
 
     # plot medians
-    p_med = Dict()
     labelpos = Dict(("R1","nosa") => (:top,    :right),
                     ("R1","sa")   => (:top, :right))
     p_med = plot()
