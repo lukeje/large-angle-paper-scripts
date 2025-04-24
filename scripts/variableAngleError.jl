@@ -23,7 +23,7 @@ opt = [optimalDFAparameters(2*TR, R1; PDorR1="R1", FAmax=FAmax) for FAmax in deg
 
 # plot relative increase in error due to flip angle restriction
 p = plot(FAmax,100*(σR1 .- σR1min)/σR1min, label="", linewidth=2)
-ylims!(0,20)
+ylims!(0,150)
 xlabel!("maximum allowed flip angle (°)")
 ylabel!("relative increase in R1 error (%)")
 
