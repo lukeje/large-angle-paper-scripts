@@ -34,7 +34,7 @@ b1_lowres = niread(glob("*B1map.nii", joinpath(indir,"sa","Results","Supplementa
 target = ni["R1","sa"]
 transNI = convertToMap(NIfTI.getaffine(target))
 transB1 = convertToMap(NIfTI.getaffine(b1_lowres))
-b1 = warp(b1_lowres, inv(transB1) ∘ transNI, axes(target), method=BSpline(Cubic()))
+b1 = warp(b1_lowres, inv(transB1) ∘ transNI, axes(target), method=BSpline(Linear()))
 
 # orientation labels
 scannerorient = NIfTI.orientation(target) # brain scanned in non-standard orientation

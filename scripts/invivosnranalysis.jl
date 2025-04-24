@@ -39,7 +39,7 @@ for sub in 1:nsub, ses in 1:nses
     target = ni
     transNI = convertToMap(NIfTI.getaffine(target))
     transB1 = convertToMap(NIfTI.getaffine(b1_lowres))
-    b1 = warp(b1_lowres, inv(transB1) ∘ transNI, axes(target), method=BSpline(Cubic()))
+    b1 = warp(b1_lowres, inv(transB1) ∘ transNI, axes(target), method=BSpline(Linear()))
 
     # brain mask
     (gm, wm, csf)  = (niread(glob("c$(n)*PDw_OLSfit_TEzero.nii", joinpath(indir,"sa","Results","Supplementary"))[]) for n in 1:3)

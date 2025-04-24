@@ -90,7 +90,7 @@ for sub in 1:nsub, ses in 1:nses
     target = ni["R1"]["sa"]
     transNI = convertToMap(NIfTI.getaffine(target))
     transB1 = convertToMap(NIfTI.getaffine(b1_lowres))
-    b1 = warp(b1_lowres, inv(transB1) ∘ transNI, axes(target), method=BSpline(Cubic()))
+    b1 = warp(b1_lowres, inv(transB1) ∘ transNI, axes(target), method=BSpline(Linear()))
 
     # try and find similar position in scanner space between sessions
     # underlying assumption that participants placed in same position each time

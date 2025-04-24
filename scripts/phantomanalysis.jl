@@ -41,7 +41,7 @@ quantilearg(q) = [0+0.5(1 - q), 1-0.5(1 - q)]
 mpms  = Dict("R1" =>  "R1",
              "A"  => L"$A$")
 conds = ["sa","nosa"]
-b1maps = ["afi","seste"]
+b1maps = ["seste"]
 opts = ["R1opt","PDopt"]
 
 # B1 map
@@ -50,7 +50,7 @@ b1_lowres = Dict(b => niread(glob("*B1map.nii", joinpath(indir,"fmap",b,run,"Res
 # interpolate B1 map to target (ni) space
 target = niread(glob("*R1.nii", joinpath(indir,"anat","afi","PDopt","sa",run,"Results"))[])
 transNI = convertToMap(NIfTI.getaffine(target))
-b1 = Dict(b => warp(b1_lowres[b], inv(convertToMap(NIfTI.getaffine(b1_lowres[b]))) ∘ transNI, axes(target), method=BSpline(Cubic())) for b in b1maps)
+b1 = Dict(b => warp(b1_lowres[b], inv(convertToMap(NIfTI.getaffine(b1_lowres[b]))) ∘ transNI, axes(target), method=BSpline(Linear())) for b in b1maps)
 
 # phantom mask
 mask = niread(maskfile) .> 0
