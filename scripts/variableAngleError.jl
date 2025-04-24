@@ -25,7 +25,7 @@ opt = [optimalDFAparameters(2*TR, R1; PDorR1="R1", FAmax=FAmax) for FAmax in deg
 p = plot(FAmax,100*(σR1 .- σR1min)/σR1min, label="", linewidth=2)
 ylims!(0,20)
 xlabel!("maximum allowed flip angle (°)")
-ylabel!("relative increase in error (%)")
+ylabel!("relative increase in R1 error (%)")
 
 savefig(p, joinpath(dirname(@__DIR__),"figures","variableangleerror.png"))
 
