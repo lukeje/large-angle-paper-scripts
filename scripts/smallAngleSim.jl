@@ -23,7 +23,7 @@ faT1w  = (27, 84)
 
 Adifflim  = ((-0.5,2.5), ( -10, 50))
 R1difflim = ((-8,  2),   (-60, 15))
-for SNR in (18, 51, Inf) # in vivo, postmortem, no noise
+for SNR in ([Inf,Inf],[18,51]) # in vivo, postmortem, no noise
     for N in (1, 2)
         # use novel method
         MRItypes.half_angle_tan(α) = 2tan(0.5α)
@@ -34,7 +34,7 @@ for SNR in (18, 51, Inf) # in vivo, postmortem, no noise
         R1_est = MRImaps.calculateR1.(PDw, T1w)
         
         # compute first order error propagation
-        σ = MRIutils.ernstd.(faPDw[N], TR[N], R1[N], PD=A).signal/SNR
+        σ = MRIutils.ernstd.(faPDw[N], TR[N], R1[N], PD=A).signal/SNR[N]
         dA = MRIutils.dPD.(PDw,T1w,σ,σ)
         dR1 = MRIutils.dR1.(PDw,T1w,σ,σ)
 
@@ -63,7 +63,7 @@ for SNR in (18, 51, Inf) # in vivo, postmortem, no noise
         xticks!(50:25:150)
 
         # fudge factor for increase in axis needed to show errors
-        ylims!((ylims() .+ 400 .* [-1,1]/SNR)...)
+        ylims!((ylims() .+ 400 .* [-1,1]/SNR[N])...)
 
         ylabel!("relative R1 error (%)")
 
@@ -80,7 +80,7 @@ for SNR in (18, 51, Inf) # in vivo, postmortem, no noise
         xticks!(50:25:150)
 
         # fudge factor for increase in axis needed to show errors
-        ylims!((ylims() .+ 200 .* [-1,1]/SNR)...)
+        ylims!((ylims() .+ 200 .* [-1,1]/SNR[N])...)
 
         xlabel!(L"$f_\mathrm{t}$ (%)")
         ylabel!(L"relative $A$ error (%)")
@@ -93,5 +93,5 @@ for SNR in (18, 51, Inf) # in vivo, postmortem, no noise
     end
 
     pl = plot(p[1],p[2], layout=(1,2), dpi=300, size=(1200,600), margin=5Plots.mm, plot_title=" ")
-    savefig(pl, joinpath(dirname(@__DIR__),"figures","simulation_SNR$(SNR).png"))
+    savefig(pl, joinpath(dirname(@__DIR__),"figures","simulation_SNR$(SNR[1])_$(SNR[2]).png"))
 end
