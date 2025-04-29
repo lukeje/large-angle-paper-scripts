@@ -1,5 +1,5 @@
 using Pkg
-Pkg.activate(@__DIR__) 
+Pkg.activate(@__DIR__)
 
 using Glob: glob
 using NIfTI
@@ -48,7 +48,7 @@ opts = ["R1opt","PDopt"]
 b1_lowres = Dict(b => niread(glob("*B1map.nii", joinpath(indir,"fmap",b,run,"Results"))[]) for b in b1maps)
 
 # interpolate B1 map to target (ni) space
-target = niread(glob("*R1.nii", joinpath(indir,"anat","afi","PDopt","sa",run,"Results"))[])
+target = niread(glob("*R1.nii", joinpath(indir,"anat","seste","PDopt","sa",run,"Results"))[])
 transNI = convertToMap(NIfTI.getaffine(target))
 b1 = Dict(b => warp(b1_lowres[b], inv(convertToMap(NIfTI.getaffine(b1_lowres[b]))) ∘ transNI, axes(target), method=BSpline(Linear())) for b in b1maps)
 
