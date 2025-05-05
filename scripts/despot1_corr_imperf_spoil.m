@@ -5,6 +5,8 @@
 % Adapts the approach from
 %   Preibisch and Deichmann (2009) Magn. Reson. Med. 
 %   https://doi.org/10.1002/mrm.21776
+% as implemented in the hMRI toolbox 
+% (https://github.com/hMRI-group/hMRI-toolbox/blob/master/hmri_corr_imperf_spoil.m)
 
 % We need to add the hMRI toolbox and EPG-X to the path
 addpath(fullfile(fileparts(mfilename('fullpath')),'external','hMRI-toolbox'))
@@ -18,7 +20,7 @@ fprintf('\t--- Calculating Imperfect Spoiling Correction Coefficients ---\n');
 % Get sequence parameters
 FA      =   [30 19 10 2]; % Flip angles [deg]
 TR      =   8.1;          % [ms]
-Phi0    =   50;           % [deg]; not sure whether this is 50° or 117°
+Phi0    =   115.4;        % [deg]; GE default value (https://github.com/pulseq/pulseq/discussions/55#discussioncomment-10796364)
 B1range =   0.7:0.1:1.3;  % such that 100% = 1
 
 Gamp    =   40;    % [mT/m]; assume max used
