@@ -35,7 +35,7 @@ mask = niread(maskfile) .> 0
 m = (R1PDopt[mask] .+ R1R1opt[mask])/2
 d =  R1PDopt[mask] .- R1R1opt[mask]
 
-h = histogram2d(m,d)
+h = histogram2d(m,d, colorbar=false)
 x = [xlims()...]
 y = [ylims()...]
 plot!(x,              mean(d)*[1,1], color=:blue, label="")
@@ -71,7 +71,7 @@ skipnan(x) = Iterators.filter(isfinite,x)
 μ = mean(skipnan(d))
 σ = std(skipnan(d))
 
-h2 = histogram2d(m,d)
+h2 = histogram2d(m,d, colorbar=false)
 plot!(x, μ        *[1,1], color=:blue, label="")
 plot!(x,(μ+1.96*σ)*[1,1], color=:red,  label="")
 plot!(x,(μ-1.96*σ)*[1,1], color=:red,  label="")
@@ -81,7 +81,7 @@ xlabel!("mean R1 (1/s)")
 ylabel!("R1 difference (1/s)")
 title!("R1 estimates corrected for imperfect spoiling")
 
-p = plot(h,h2,layout=[1,1])
+p = plot(h,h2,layout=[1,1], dpi=300, size=(800,800), margin=5Plots.mm)
 
 savefig(p, joinpath(outdir,"phantom_R1baplot.png"))
 
