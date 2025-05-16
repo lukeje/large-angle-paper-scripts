@@ -5,7 +5,7 @@ using Glob: glob
 using NIfTI
 using Images, ImageTransformations, ImageMorphology
 using CoordinateTransformations, Interpolations
-using Plots
+using Plots, LaTeXStrings
 using Statistics
 using JSON
 
@@ -35,6 +35,8 @@ mask = niread(maskfile) .> 0
 m = (R1PDopt[mask] .+ R1R1opt[mask])/2
 d =  R1PDopt[mask] .- R1R1opt[mask]
 
+@show mean(m)
+
 h = histogram2d(m,d, colorbar=false)
 x = [xlims()...]
 y = [ylims()...]
@@ -43,8 +45,8 @@ plot!(x,(mean(d)+1.96*std(d))*[1,1], color=:red,  label="")
 plot!(x,(mean(d)-1.96*std(d))*[1,1], color=:red,  label="")
 xlims!(x...)
 ylims!(y...)
-xlabel!("mean R1 (1/s)")
-ylabel!("R1 difference (1/s)")
+xlabel!(L"mean R1 (s$^{-1}$)")
+ylabel!(L"R1 difference (s$^{-1}$)")
 title!("raw R1 estimates")
 
 function read_imperfect_spoiling_coeff(file)
@@ -68,6 +70,8 @@ d =  correctR1.(R1PDopt[mask],b1[mask],[aPD],[bPD]) .- correctR1.(R1R1opt[mask],
 
 skipnan(x) = Iterators.filter(isfinite,x)
 
+@show mean(skipnan(m))
+
 μ = mean(skipnan(d))
 σ = std(skipnan(d))
 
@@ -77,8 +81,8 @@ plot!(x,(μ+1.96*σ)*[1,1], color=:red,  label="")
 plot!(x,(μ-1.96*σ)*[1,1], color=:red,  label="")
 xlims!(x...)
 ylims!(y...)
-xlabel!("mean R1 (1/s)")
-ylabel!("R1 difference (1/s)")
+xlabel!(L"mean R1 (s$^{-1}$)")
+ylabel!(L"R1 difference (s$^{-1}$)")
 title!("R1 estimates corrected for imperfect spoiling")
 
 p = plot(h,h2,layout=[1,1], dpi=300, size=(800,800), margin=5Plots.mm)
