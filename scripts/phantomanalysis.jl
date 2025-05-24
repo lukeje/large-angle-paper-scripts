@@ -16,7 +16,7 @@ indir = joinpath(inroot, "hmri", "sub-phantom")
 outdir = joinpath(dirname(@__DIR__), "figures")
 
 # should be based on values in data
-b1lims = (60,120) # p.u.
+b1lims = (70,120) # p.u.
 difflims = Dict("R1" => (-5,   0.1), 
                 "A" => ( -0.1, 1))
 
@@ -35,7 +35,6 @@ reldiff(a,b) = b!=0 ? 100 * (a - b)/b : (a==0 ? zero(a) : NaN)
 skipnan(x) = Iterators.filter(isfinite,x)
 
 quantilearg(q) = [0+0.5(1 - q), 1-0.5(1 - q)]
-
 
 # MPM data labels
 mpms  = Dict("R1" =>  "R1",
@@ -116,7 +115,7 @@ for b in b1maps
 
         # example images
         slicedim = 3
-        slice = Int(round(size(target,slicedim)/2))
+        slice = Int(round(size(target,slicedim)/2))+22 # pick slice without wrap-around
         function hm(i,c,t,ct) # volume, clim, title, colorbar_title
             islice = selectdim(i[:,:,:],slicedim,slice)
             islice[.!selectdim(mask[:,:,:],slicedim,slice)] .= NaN
