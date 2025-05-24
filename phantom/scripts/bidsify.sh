@@ -7,10 +7,33 @@ indir=$rootdir/.dcm
 
 sub=phantom
 
-## MPM
+## IRT1
 anat=$rootdir/sub-"$sub"/anat
 mkdir -p "$anat"
 
+# initial conversion with dcm2niix
+scratch=$(mktemp -d)
+dcm2niix -o "$scratch" "$indir"/ir
+
+# rename dcm2niix output to match qMRI BIDS
+inv=1
+for ti in 30 50 100 170 310 560 1000 1790 3190 5900; do
+	mag=$scratch/ir_irse_${ti}ms_20250522161319_??.nii
+	ph=$scratch/ir_irse_${ti}ms_20250522161319_??_ph.nii
+
+	for ext in .nii .json; do
+		mv ${mag/.nii/"$ext"} "$anat"/sub-"$sub"_inv-"$inv"_part-mag_IRT1"$ext"
+		mv ${ph/.nii/"$ext"}  "$anat"/sub-"$sub"_inv-"$inv"_part-phase_IRT1"$ext"
+	done
+
+	((inv++))
+done
+
+# clean-up temporary folder
+rm -f "$scratch"/ir_irse_*ms_20250522161319_*.*
+rmdir "$scratch"
+
+## MPM
 dcm2niix -o "$anat" -f sub-"$sub"_acq-R1opt_echo-%e_flip-2_mt-off_MPM "$indir"/8_t1w_*_R1
 dcm2niix -o "$anat" -f sub-"$sub"_acq-R1opt_echo-%e_flip-1_mt-off_MPM "$indir"/9_pdw_*_R1
 dcm2niix -o "$anat" -f sub-"$sub"_acq-PDopt_echo-%e_flip-2_mt-off_MPM "$indir"/11_t1w_*_PD2

@@ -5,7 +5,9 @@ invivo/processed/*
 invivo/info
 postmortem/raw/*
 postmortem/processed/*
-phantom/*
+phantom/sub-phantom/*
+phantom/derived/*
+phantom/.dcm
 *.nii
 *.nii.gz
 
