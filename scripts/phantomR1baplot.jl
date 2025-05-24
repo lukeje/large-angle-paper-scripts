@@ -7,6 +7,7 @@ using Images, ImageTransformations, ImageMorphology
 using CoordinateTransformations, Interpolations
 using Plots, LaTeXStrings
 using Statistics
+using DataFrames, CSV
 using JSON
 
 inroot = joinpath(dirname(@__DIR__), "phantom", "derived")
@@ -34,6 +35,9 @@ imp_sp_file = Dict(o => joinpath(@__DIR__, "Phantom_$(o)opt.json") for o in ["PD
 (aPD,bPD) = read_imperfect_spoiling_coeff(imp_sp_file["PD"])
 
 for b in ["afi","seste"]
+
+    mR1 = Matrix{Float64}(undef,1,2)
+
     # R1 maps
     R1PDopt = niread(glob("*R1.nii", joinpath(indir,"anat",b,"PDopt","nosa","Results"))[])
     R1R1opt = niread(glob("*R1.nii", joinpath(indir,"anat",b,"R1opt","nosa","Results"))[])
@@ -52,7 +56,7 @@ for b in ["afi","seste"]
     m = (R1PDopt[mask] .+ R1R1opt[mask])/2
     d =  R1PDopt[mask] .- R1R1opt[mask]
 
-    @show mean(m)
+    mR1[1] = median(m)
 
     h = histogram2d(m,d, colorbar=false)
     x = [xlims()...]
@@ -71,7 +75,7 @@ for b in ["afi","seste"]
 
     skipnan(x) = Iterators.filter(isfinite,x)
 
-    @show mean(skipnan(m))
+    mR1[2] = median(skipnan(m))
 
     μ = mean(skipnan(d))
     σ = std(skipnan(d))
@@ -89,5 +93,8 @@ for b in ["afi","seste"]
     p = plot(h,h2,layout=[1,1], dpi=300, size=(800,800), margin=5Plots.mm)
 
     savefig(p, joinpath(outdir,"phantom_b1-$(b)_R1baplot.png"))
+
+    CSV.write(joinpath(outdir,"phantom_b1-$(b)_VFA_R1est.csv"), 
+        DataFrame(mR1, ["raw R1", "impsp corr R1"]))
 
 end
