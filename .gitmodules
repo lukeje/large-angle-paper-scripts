@@ -4,3 +4,6 @@
 [submodule "scripts/external/MPMtools.jl"]
 	path = scripts/external/MPMtools.jl
 	url = https://github.com/lukeje/MPMtools.jl.git
+[submodule "scripts/external/qMRLab"]
+	path = scripts/external/qMRLab
+	url = https://github.com/qMRLab/qMRLab.git
