@@ -41,7 +41,7 @@ quantilearg(q) = [0+0.5(1 - q), 1-0.5(1 - q)]
 mpms  = Dict("R1" =>  "R1",
              "A"  => L"$A$")
 conds = ["sa","nosa"]
-b1maps = ["seste"]
+b1maps = ["seste","afi"]
 opts = ["R1opt","PDopt"]
 
 # B1 map
