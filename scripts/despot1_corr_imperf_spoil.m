@@ -34,8 +34,8 @@ assert(all(sum(Gdur)<=TR), 'The total duration of the gradients cannot exceed TR
 
 %% Get tissue parameters
 T1range     = [800, 1000, 1200]; % [ms]
-T2range     = 196;               % [ms]
-D           = 0.6;               % [um^2/ms]
+T2range     = 250;               % [ms]
+D           = 0.8;               % [um^2/ms]
 
 %% Build structure "diff" to account for diffusion effect
 % Note we include any deadtime during each TR so that diffusion effects
