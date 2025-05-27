@@ -10,8 +10,8 @@ using Plots
 using LaTeXStrings
 
 # same parameters as used for the in vivo simulation in smallAngleSim.jl
-R1     = 0.82 
-TR     = 31.6e-3
+R1  = 0.82 
+TR  = 31.6e-3
 fa1 = 5
 fa2 = 27
 
@@ -29,7 +29,7 @@ taylorratiod(fa, R1TR) = taylorratio(deg2rad(fa), R1TR)
 function R1esttaylorratiod(fa1,fa2,tr1,tr2,S1,S2)
     s1,c1 = sincosd(fa1)
     s2,c2 = sincosd(fa2)
-    return ( (S1/S2)*(1 - c1) - (s1/s2)*(tr1/tr2)*(1 - c2) ) / ( (c2*(s1/s2) - (S1/S2)*c1)*tr1 )
+    return ( S1*s2*(1 - c1)/tr1 - S2*s1*(1 - c2)/tr2 ) / ( S2*s1*c2 - S1*s2*c1 )
 end
 
 # relative error in percent for plotting
@@ -40,8 +40,8 @@ fa = range(0,π/2,length=100)
 S = [MRIutils.ernst(a, TR, R1).signal for a in fa]
 
 p1 = plot(legend_position=:right, dpi=300, size=(400,300))
-plot!(rad2deg.(fa),relerror.(taylorratio.(fa, R1*TR), S), label="Approx. without small angle assumption from Ref. 7")
-plot!(rad2deg.(fa),relerror.(pade.(fa, R1*TR), S), label="Approx. from this manuscript")
+plot!(rad2deg.(fa), relerror.(taylorratio.(fa, R1*TR), S), label="Approx. without small angle assumption from Ref. 7", linewidth=2)
+plot!(rad2deg.(fa), relerror.(pade.(fa, R1*TR), S), label="Approx. from this manuscript", linewidth=2)
 xlabel!("flip angle (°)")
 ylabel!("relative error\nin signal (%)")
 ylims!(-0.35,1.3)
@@ -62,8 +62,8 @@ R1taylorratio = R1esttaylorratiod.(fa1,fa2,TR,TR,[s.signal for s in S1],[s.signa
 R1pade = MRImaps.calculateR1.(S1,S2)
 
 p2 = plot()
-plot!(R1s,relerror.(R1taylorratio,R1s),label="")
-plot!(R1s,relerror.(R1pade,R1s),label="")
+plot!(R1s, relerror.(R1taylorratio,R1s), label="", linewidth=2)
+plot!(R1s, relerror.(R1pade,R1s), label="", linewidth=2)
 ylabel!("relative error in\nR1 estimate (%)")
 xlabel!(L"ground truth R1 (s$^{-1}$)")
 
