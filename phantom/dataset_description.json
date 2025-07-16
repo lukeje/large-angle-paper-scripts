@@ -1,0 +1,7 @@
+{
+	"Name": "phantom",
+	"BIDSVersion": "1.10.0",
+	"Authors": ["Luke J. Edwards", "Kerrin J. Pine"],
+	"License": "PD",
+	"DatasetType": "raw"
+}

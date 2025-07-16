@@ -1,0 +1,39 @@
+{
+	"Input": {
+		"outdir": ["."],
+		"prot_name": "InVivo",
+		"seq_params": {
+			"FA_deg": [5,27],
+			"TR_ms": [31.6,31.6],
+			"Phi0_deg": 137,
+			"B1range_percent": [50,55,60,65,70,75,80,85,90,95,100,105,110,115,120,125,130],
+			"Gdur_ms": 6.774984114009157,
+			"Gamp_mT_per_m": 26
+		},
+		"tissue_params": {
+			"T1range_ms": [1000,1080,1160,1240,1320,1400,1480,1560,1640,1720,1800,1880,1960,2040,2120,2200],
+			"T2range_ms": 45,
+			"D_um2_per_ms": 0.8
+		},
+		"small_angle_approx": false
+	},
+	"Output": {
+		"P2_a": [6.0371,-7.2493,3.2557],
+		"P2_b": [-0.013,0.0106,0.9968],
+		"small_angle_approx": false,
+		"RMSE_percent": {
+			"T1app": 0.456,
+			"T1corr": 0.007
+		}
+	},
+	"ToCopy": [
+		"hmri_def.MPMacq_set.names{NN} = 'InVivo';",
+		"hmri_def.MPMacq_set.tags{NN}  = 'InVivo';",
+		"hmri_def.MPMacq_set.vals{NN}  = [31.6         31.6            5           27];",
+		"hmri_def.imperfectSpoilCorr.InVivo.tag = 'InVivo';",
+		"hmri_def.imperfectSpoilCorr.InVivo.P2_a = [6.0371     -7.2493      3.2557];",
+		"hmri_def.imperfectSpoilCorr.InVivo.P2_b = [-0.013      0.0106      0.9968];",
+		"hmri_def.imperfectSpoilCorr.InVivo.small_angle_approx = false;",
+		"hmri_def.imperfectSpoilCorr.InVivo.enabled = hmri_def.imperfectSpoilCorr.enabled;"
+	]
+}

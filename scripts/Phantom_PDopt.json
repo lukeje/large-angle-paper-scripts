@@ -1,0 +1,39 @@
+{
+	"Input": {
+		"outdir": ["C:\\Users\\ledwards\\Work\\Papers\\large-angle-approximation\\manuscript\\scripts\\scripts"],
+		"prot_name": "Phantom_PDopt",
+		"seq_params": {
+			"FA_deg": [8,18],
+			"TR_ms": [51.2,8.800000000000001],
+			"Phi0_deg": 137,
+			"B1range_percent": [50,55,60,65,70,75,80,85,90,95,100,105,110,115,120,125,130],
+			"Gdur_ms": 2.115910954525382,
+			"Gamp_mT_per_m": 33.3
+		},
+		"tissue_params": {
+			"T1range_ms": [500,600,700,800,900,1000,1100,1200,1300,1400,1500,1600,1700,1800,1900,2000],
+			"T2range_ms": 250,
+			"D_um2_per_ms": 0.8
+		},
+		"small_angle_approx": false
+	},
+	"Output": {
+		"P2_a": [69.59229999999999,-81.6178,34.922],
+		"P2_b": [-0.1533,0.105,0.9687],
+		"small_angle_approx": false,
+		"RMSE_percent": {
+			"T1app": 6.77,
+			"T1corr": 0.311
+		}
+	},
+	"ToCopy": [
+		"hmri_def.MPMacq_set.names{NN} = 'Phantom_PDopt';",
+		"hmri_def.MPMacq_set.tags{NN}  = 'Phantom_PDopt';",
+		"hmri_def.MPMacq_set.vals{NN}  = [51.2          8.8            8           18];",
+		"hmri_def.imperfectSpoilCorr.Phantom_PDopt.tag = 'Phantom_PDopt';",
+		"hmri_def.imperfectSpoilCorr.Phantom_PDopt.P2_a = [69.5923     -81.6178       34.922];",
+		"hmri_def.imperfectSpoilCorr.Phantom_PDopt.P2_b = [-0.1533       0.105      0.9687];",
+		"hmri_def.imperfectSpoilCorr.Phantom_PDopt.small_angle_approx = false;",
+		"hmri_def.imperfectSpoilCorr.Phantom_PDopt.enabled = hmri_def.imperfectSpoilCorr.enabled;"
+	]
+}
